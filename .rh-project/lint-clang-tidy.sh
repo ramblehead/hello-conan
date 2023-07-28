@@ -35,7 +35,6 @@ SRC_TYPES=(-name '*.cpp' -o -name '*.hpp' -o -name '*.c' -o -name '*.h')
 
 find "${SRC}" -type f \( "${SRC_TYPES[@]}" \) -print0 |
 while IFS= read -r -d '' FILE; do
-  export FILE
   output=$(clang-tidy-${CLANG_VERSION} "${FILE}" | tee /dev/tty) ||:
   warning_count=$(echo "${output}" | grep -ci "warning\:") ||:
   error_count=$(echo "${output}" | grep -ci "error\:") ||:
