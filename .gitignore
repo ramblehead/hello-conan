@@ -9,8 +9,8 @@ __pycache__/
 
 # Conan
 
-/CMakeUserPresets.json
 /build
+/CMakeUserPresets.json
 
 
 # Backup Files
