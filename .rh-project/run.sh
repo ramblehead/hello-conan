@@ -17,16 +17,13 @@ BUILD_PATH="${PRJ_ROOT_PATH}/build"
 cd "${BUILD_PATH}" && echo + cd "${PWD}"
 
 echo
-CMD=(source conanbuild.sh)
+CMD=(source conanrun.sh)
 echo + "${CMD[@]}" && "${CMD[@]}"
 
 echo
-CMD=(cmake)
-CMD+=(--build)
-CMD+=(.)
-CMD+=("--config=Release")
+CMD=(./compressor)
 echo + "${CMD[@]}" && "${CMD[@]}"
 
 echo
-CMD=(source deactivate_conanbuild.sh)
+CMD=(source deactivate_conanrun.sh)
 echo + "${CMD[@]}" && "${CMD[@]}"

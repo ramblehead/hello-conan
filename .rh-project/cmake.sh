@@ -5,17 +5,20 @@ set -o pipefail
 
 SPATH="$(dirname "${BASH_SOURCE[0]}")"
 if [[ ! -d "${SPATH}" ]]; then SPATH="${PWD}"; fi
-readonly SPATH="$(cd "${SPATH}" && pwd)"
+SPATH="$(cd "${SPATH}" && pwd)"
+readonly SPATH
 
 PRJ_ROOT_PATH="${SPATH}/.."
-readonly PRJ_ROOT_PATH="$(cd "${PRJ_ROOT_PATH}" && pwd)"
+PRJ_ROOT_PATH="$(cd "${PRJ_ROOT_PATH}" && pwd)"
+readonly PRJ_ROOT_PATH
 
 BUILD_PATH="${PRJ_ROOT_PATH}/build"
 
 cd "${BUILD_PATH}" && echo + cd "${PWD}"
 
 echo
-source conanbuild.sh
+CMD=(source conanbuild.sh)
+echo + "${CMD[@]}" && "${CMD[@]}"
 
 cmake --version
 
@@ -29,4 +32,5 @@ CMD+=("-DCMAKE_BUILD_TYPE=Release")
 echo + "${CMD[@]}" && "${CMD[@]}"
 
 echo
-source deactivate_conanbuild.sh
+CMD=(source deactivate_conanbuild.sh)
+echo + "${CMD[@]}" && "${CMD[@]}"

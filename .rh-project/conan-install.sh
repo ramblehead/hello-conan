@@ -17,8 +17,8 @@ cd "${PRJ_ROOT_PATH}" && echo + cd "${PWD}"
 CMD=(poetry run conan install)
 CMD+=(.)
 CMD+=("--output-folder=build")
-CMD+=('--build="*"')
-# CMD+=("--build=missing")
+# CMD+=('--build="*"')
+CMD+=("--build=missing")
 CMD+=("-pr:h=./utils/conan2/profiles/clang-16")
 CMD+=("-pr:b=./utils/conan2/profiles/clang-16")
 # shellcheck disable=2294
