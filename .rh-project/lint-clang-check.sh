@@ -12,6 +12,7 @@ PRJ_ROOT_PATH="${SDPATH}/.."
 PRJ_ROOT_PATH="$(cd "${PRJ_ROOT_PATH}" && pwd)"
 readonly PRJ_ROOT_PATH
 
+# shellcheck disable=1090
 source "${SDPATH}/conf.sh"
 
 cd "${PRJ_ROOT_PATH}" && echo + cd "${PWD}"
@@ -24,7 +25,7 @@ CMD+=("--extra-arg=-Wno-unknown-warning-option")
 CMD+=("--extra-arg=-Wno-unused-command-line-argument")
 CMD+=("src/*")
 
-output=$(script -I /dev/null -qefc "${CMD[*]} 2>&1" | tee /dev/tty)
+output=$(script -qefc "${CMD[*]} 2>&1" /dev/null | tee /dev/tty)
 
 error_count=$(echo "${output}" | grep -ci error) ||:
 warning_count=$(echo "${output}" | grep -ci warning) ||:

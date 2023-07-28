@@ -12,6 +12,7 @@ PRJ_ROOT_PATH="${SDPATH}/.."
 PRJ_ROOT_PATH="$(cd "${PRJ_ROOT_PATH}" && pwd)"
 readonly PRJ_ROOT_PATH
 
+# shellcheck disable=1090
 source "${SDPATH}/conf.sh"
 
 cd "${PRJ_ROOT_PATH}" && echo + cd "${PWD}"
@@ -19,23 +20,13 @@ cd "${PRJ_ROOT_PATH}" && echo + cd "${PWD}"
 # Set the directory to search
 SRC="${PRJ_ROOT_PATH}/src"
 
-cleanup() {
-  rm -f "${temp_count_file}"
-}
-
-temp_count_file=$(mktemp)
-export temp_count_file
-
-trap cleanup EXIT
-
 error_total_count=0
 warning_total_count=0
 
 SRC_TYPES=(-name '*.cpp' -o -name '*.hpp' -o -name '*.c' -o -name '*.h')
 
-find "${SRC}" -type f \( "${SRC_TYPES[@]}" \) -print0 |
 while IFS= read -r -d '' FILE; do
-  output=$(clang-tidy-${CLANG_VERSION} "${FILE}" | tee /dev/tty) ||:
+  output=$(script -qefc "'clang-tidy-${CLANG_VERSION}' '${FILE}'" 2>&1 /dev/null | tee /dev/tty) ||:
   warning_count=$(echo "${output}" | grep -ci "warning\:") ||:
   error_count=$(echo "${output}" | grep -ci "error\:") ||:
 
@@ -44,12 +35,9 @@ while IFS= read -r -d '' FILE; do
   echo "  File total number of clang-tidy errors: ${error_count}"
   echo "  File total number of clang-tidy warnings: ${warning_count}"
 
-  echo "((error_total_count += ${error_count})) ||:" >> "${temp_count_file}"
-  echo "((warning_total_count += ${warning_count})) ||:" >> "${temp_count_file}"
-done
-
-# shellcheck disable=1090
-source "${temp_count_file}"
+  ((error_total_count += error_count)) ||:
+  ((warning_total_count += warning_count)) ||:
+done < <(find "${SRC}" -type f \( "${SRC_TYPES[@]}" \) -print0)
 
 echo
 echo "Project total number of clang-tidy errors: ${error_total_count}"
