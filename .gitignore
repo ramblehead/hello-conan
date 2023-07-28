@@ -13,6 +13,11 @@ __pycache__/
 /CMakeUserPresets.json
 
 
+# C/C++
+
+/.cache/clangd
+
+
 # Backup Files
 *.bkp
 
