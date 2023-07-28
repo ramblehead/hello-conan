@@ -14,6 +14,7 @@ BUILD_PATH="${PRJ_ROOT_PATH}/build"
 
 cd "${BUILD_PATH}" && echo + cd "${PWD}"
 
+echo
 source conanbuild.sh
 
 CMD=(cmake)
@@ -22,4 +23,5 @@ CMD+=(.)
 CMD+=("--config=Release")
 echo + "${CMD[@]}" && "${CMD[@]}"
 
+echo
 source deactivate_conanbuild.sh
