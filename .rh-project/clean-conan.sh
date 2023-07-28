@@ -20,7 +20,3 @@ echo + "${CMD[@]}" && "${CMD[@]}"
 echo
 CMD=(rm -fv CMakeUserPresets.json)
 echo + "${CMD[@]}" && "${CMD[@]}"
-
-echo
-CMD=(rm -rfv .ruff_cache)
-echo + "${CMD[@]}" && "${CMD[@]}"

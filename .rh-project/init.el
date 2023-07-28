@@ -8,92 +8,88 @@
 (require 'lsp-javascript)
 (require 'clang-format)
 
-;;; mobility-separator-embedded common command
+;;; hello-conan common command
 ;;; /b/{
 
-(defvar mobility-separator-embedded/build-buffer-name
-  "*mobility-separator-embedded-build*")
+(defvar hello-conan/build-buffer-name
+  "*hello-conan-build*")
 
-(defun mobility-separator-embedded/lint ()
+;; (defun hello-conan/lint ()
+;;   (interactive)
+;;   (rh-project-compile
+;;    "yarn-run app:lint"
+;;    hello-conan/build-buffer-name))
+
+(defun hello-conan/build ()
   (interactive)
   (rh-project-compile
-   "yarn-run app:lint"
-   mobility-separator-embedded/build-buffer-name))
+   "build.sh"
+   hello-conan/build-buffer-name))
 
-(defun mobility-separator-embedded/build ()
+(defun hello-conan/clean ()
   (interactive)
   (rh-project-compile
-   "yarn-run app:build"
-   mobility-separator-embedded/build-buffer-name))
-
-(defun mobility-separator-embedded/clean ()
-  (interactive)
-  (rh-project-compile
-   "yarn-run app:clean"
-   mobility-separator-embedded/build-buffer-name))
+   "clean-conan.sh"
+   hello-conan/build-buffer-name))
 
 ;;; /b/}
 
-;;; mobility-separator-embedded
+;;; hello-conan
 ;;; /b/{
 
-(defun mobility-separator-embedded/hydra-define ()
-  (defhydra mobility-separator-embedded-hydra (:color blue :columns 5)
-    "@mobility-separator-embedded workspace commands"
-    ("l" mobility-separator-embedded/lint "lint")
-    ("b" mobility-separator-embedded/build "build")
-    ("c" mobility-separator-embedded/clean "clean")))
+(defun hello-conan/hydra-define ()
+  (defhydra hello-conan-hydra (:color blue :columns 5)
+    "@hello-conan workspace commands"
+    ;; ("l" hello-conan/lint "lint")
+    ("b" hello-conan/build "build")
+    ("c" hello-conan/clean "clean")))
 
-(mobility-separator-embedded/hydra-define)
+(hello-conan/hydra-define)
 
-(define-minor-mode mobility-separator-embedded-mode
-  "mobility-separator-embedded project-specific minor mode."
-  :lighter " mobility-separator-embedded"
+(define-minor-mode hello-conan-mode
+  "hello-conan project-specific minor mode."
+  :lighter " hello-conan"
   :keymap (let ((map (make-sparse-keymap)))
-            (define-key map (kbd "<f9>") #'mobility-separator-embedded-hydra/body)
+            (define-key map (kbd "<f9>") #'hello-conan-hydra/body)
             map))
 
-(add-to-list 'rm-blacklist " mobility-separator-embedded")
+(add-to-list 'rm-blacklist " hello-conan")
 
-(defun mobility-separator-embedded/lsp-deps-providers-path (path)
+(defun hello-conan/lsp-deps-providers-path (path)
   (concat (expand-file-name (rh-project-get-root))
           "node_modules/.bin/"
           path))
 
-(defvar mobility-separator-embedded/lsp-clients-clangd-args '())
+(defvar hello-conan/lsp-clients-clangd-args '())
 
-(setq lsp-clients-clangd-library-directories '("~/.platformio"))
+;; (setq lsp-clients-clangd-library-directories '("~/.platformio"))
 
-(defun mobility-separator-embedded/config-lsp-clangd ()
-  ;; (setq
-  ;;  lsp-clients-clangd-executable
-  ;;  "/home/rh/.vscode/extensions/ms-vscode.cpptools-1.16.3-linux-x64/LLVM/bin")
-  (setq mobility-separator-embedded/lsp-clients-clangd-args
+(defun hello-conan/lsp-clangd-init ()
+  (setq hello-conan/lsp-clients-clangd-args
         (copy-sequence lsp-clients-clangd-args))
   (add-to-list
-   'mobility-separator-embedded/lsp-clients-clangd-args
-   ;; "--query-driver=/usr/bin/g*-11,/usr/bin/clang*-14"
-   "--query-driver=/home/rh/.platformio/packages/toolchain-gccarmnoneeabi/bin/arm-none-eabi-g*"
+   'hello-conan/lsp-clients-clangd-args
+   "--query-driver=/usr/bin/g*-11,/usr/bin/clang*-16"
    t)
 
   ;; (add-hook
   ;;  'lsp-after-open-hook
-  ;;  #'mobility-separator-embedded/company-capf-c++-local-disable)
+  ;;  #'hello-conan/company-capf-c++-local-disable)
 
   ;; (add-hook
   ;;  'lsp-after-initialize-hook
-  ;;  #'mobility-separator-embedded/company-capf-c++-local-disable)
+  ;;  #'hello-conan/company-capf-c++-local-disable)
   )
 
-;; (defun mobility-separator-embedded/company-capf-c++-local-disable ()
+;; (defun hello-conan/company-capf-c++-local-disable ()
 ;;   (when (eq major-mode 'c++-mode)
 ;;     (setq-local company-backends
 ;;                 (remq 'company-capf company-backends))))
 
-(defun mobility-separator-embedded/config-lsp-javascript ()
+(defun hello-conan/lsp-javascript-init ()
   (plist-put
    lsp-deps-providers
-   :local (list :path #'mobility-separator-embedded/lsp-deps-providers-path))
+   :local (list :path #'hello-conan/lsp-deps-providers-path))
 
   (lsp-dependency 'typescript-language-server
                   '(:local "typescript-language-server"))
@@ -104,24 +100,24 @@
 
   (add-hook
    'lsp-after-initialize-hook
-   #'mobility-separator-embedded/flycheck-add-eslint-next-to-lsp))
+   #'hello-conan/flycheck-add-eslint-next-to-lsp))
 
-(defun mobility-separator-embedded/flycheck-add-eslint-next-to-lsp ()
+(defun hello-conan/flycheck-add-eslint-next-to-lsp ()
   (when (seq-contains-p '(js2-mode typescript-mode web-mode) major-mode)
     (flycheck-add-next-checker 'lsp 'javascript-eslint)))
 
-(defun mobility-separator-embedded/flycheck-after-syntax-check-hook-once ()
+(defun hello-conan/flycheck-after-syntax-check-hook-once ()
   (remove-hook
    'flycheck-after-syntax-check-hook
-   #'mobility-separator-embedded/flycheck-after-syntax-check-hook-once
+   #'hello-conan/flycheck-after-syntax-check-hook-once
    t)
   (flycheck-buffer))
 
-;; (eval-after-load 'lsp-javascript #'mobility-separator-embedded/config-lsp-javascript)
-(eval-after-load 'lsp-mode #'mobility-separator-embedded/config-lsp-javascript)
-(eval-after-load 'lsp-mode #'mobility-separator-embedded/config-lsp-clangd)
+;; (eval-after-load 'lsp-javascript #'hello-conan/lsp-javascript-init)
+(eval-after-load 'lsp-mode #'hello-conan/lsp-javascript-init)
+(eval-after-load 'lsp-mode #'hello-conan/lsp-clangd-init)
 
-(defun mobility-separator-embedded-setup ()
+(defun hello-conan-setup ()
   (when buffer-file-name
     (let ((project-root (rh-project-get-root))
           file-rpath ext-js)
@@ -132,12 +128,13 @@
          ((bound-and-true-p archive-subfile-mode)
           (company-mode 1))
 
+         ;; C/C++
          ((seq-contains '(c++-mode c-mode) major-mode)
           (when (rh-clangd-executable-find)
             (when (featurep 'lsp-mode)
               (setq-local
                lsp-clients-clangd-args
-               (copy-sequence mobility-separator-embedded/lsp-clients-clangd-args))
+               (copy-sequence hello-conan/lsp-clients-clangd-args))
 
               (add-to-list
                'lsp-clients-clangd-args
@@ -160,6 +157,7 @@
           (company-mode 1)
           (lsp-deferred))
 
+         ;; JavaScript/TypeScript
          ((or (setq
                ext-js
                (string-match-p
@@ -192,10 +190,61 @@
           (setq-local lsp-modeline-diagnostics-enable nil)
           (add-hook
            'flycheck-after-syntax-check-hook
-           #'mobility-separator-embedded/flycheck-after-syntax-check-hook-once
+           #'hello-conan/flycheck-after-syntax-check-hook-once
            nil t)
           (lsp 1)
           ;; (lsp-headerline-breadcrumb-mode -1)
-          (prettier-mode 1)))))))
+          (prettier-mode 1))
+
+         ;; Python
+         ((or (setq ext-js (string-match-p
+                            (concat "\\.py\\'\\|\\.pyi\\'") file-rpath))
+              (string-match-p "^#!.*python"
+                              (or (save-excursion
+                                    (goto-char (point-min))
+                                    (thing-at-point 'line t))
+                                  "")))
+
+          ;;; /b/; pyright-lsp config
+          ;;; /b/{
+
+          (setq-local lsp-pyright-prefer-remote-env nil)
+          (setq-local lsp-pyright-python-executable-cmd
+                      (file-name-concat project-root ".venv/bin/python"))
+          (setq-local lsp-pyright-venv-path
+                      (file-name-concat project-root ".venv"))
+          ;; (setq-local lsp-pyright-python-executable-cmd "poetry run python")
+          ;; (setq-local lsp-pyright-langserver-command-args
+          ;;             `(,(file-name-concat project-root ".venv/bin/pyright")
+          ;;               "--stdio"))
+
+          ;;; /b/}
+
+          ;;; /b/; ruff-lsp config
+          ;;; /b/{
+
+          (setq-local lsp-ruff-lsp-server-command
+                      `(,(file-name-concat project-root ".venv/bin/ruff-lsp")))
+          (setq-local lsp-ruff-lsp-python-path
+                      (file-name-concat project-root ".venv/bin/python"))
+          (setq-local lsp-ruff-lsp-ruff-path
+                      `[,(file-name-concat project-root ".venv/bin/ruff")])
+
+          ;;; /b/}
+
+          ;;; /b/; Python black
+          ;;; /b/{
+
+          (setq-local blacken-executable
+                      (file-name-concat project-root ".venv/bin/black"))
+
+          ;;; /b/}
+
+          (setq-local lsp-enabled-clients '(pyright ruff-lsp))
+          (setq-local lsp-before-save-edits nil)
+          (setq-local lsp-modeline-diagnostics-enable nil)
+
+          (blacken-mode 1)
+          (run-with-idle-timer 0 nil #'lsp)))))))
 
 ;;; /b/}
