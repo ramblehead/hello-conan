@@ -76,7 +76,8 @@
 
 (defvar hello-conan/lsp-clients-clangd-args '())
 
-;; (setq lsp-clients-clangd-library-directories '("~/.platformio"))
+(setq lsp-clients-clangd-library-directories
+      '("~/.conan2" "/usr/include" "/usr/local/include"))
 
 (defun hello-conan/lsp-clangd-init ()
   (setq hello-conan/lsp-clients-clangd-args
