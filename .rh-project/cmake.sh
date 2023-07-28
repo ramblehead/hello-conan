@@ -3,24 +3,22 @@
 set -eu
 set -o pipefail
 
-SPATH="$(dirname "${BASH_SOURCE[0]}")"
-if [[ ! -d "${SPATH}" ]]; then SPATH="${PWD}"; fi
-SPATH="$(cd "${SPATH}" && pwd)"
-readonly SPATH
+SDPATH="$(dirname "${BASH_SOURCE[0]}")"
+if [[ ! -d "${SDPATH}" ]]; then SDPATH="${PWD}"; fi
+SDPATH="$(cd "${SDPATH}" && pwd)"
+readonly SDPATH
 
-PRJ_ROOT_PATH="${SPATH}/.."
+PRJ_ROOT_PATH="${SDPATH}/.."
 PRJ_ROOT_PATH="$(cd "${PRJ_ROOT_PATH}" && pwd)"
 readonly PRJ_ROOT_PATH
 
-BUILD_PATH="${PRJ_ROOT_PATH}/build"
+source "${SDPATH}/conf.sh"
 
-cd "${BUILD_PATH}" && echo + cd "${PWD}"
+cd "${BLD_PATH}" && echo + cd "${PWD}"
 
 echo
 CMD=(source conanbuild.sh)
 echo + "${CMD[@]}" && "${CMD[@]}"
-
-cmake --version
 
 CMD=(cmake)
 CMD+=(..)
