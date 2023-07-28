@@ -5,7 +5,6 @@
 #include <string.h>
 
 #include <zlib.h>
-xxx
 
 int main(void) {
     char buffer_in [256] = {"Conan is a MIT-licensed, Open Source package manager for C and C++ development "
