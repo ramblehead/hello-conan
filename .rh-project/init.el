@@ -20,13 +20,25 @@
 ;;    "yarn-run app:lint"
 ;;    hello-conan/build-buffer-name))
 
+(defun hello-conan/conan-install ()
+  (interactive)
+  (rh-project-compile
+   "conan-install.sh"
+   hello-conan/build-buffer-name))
+
+(defun hello-conan/cmake ()
+  (interactive)
+  (rh-project-compile
+   "cmake.sh"
+   hello-conan/build-buffer-name))
+
 (defun hello-conan/build ()
   (interactive)
   (rh-project-compile
    "build.sh"
    hello-conan/build-buffer-name))
 
-(defun hello-conan/clean ()
+(defun hello-conan/clean-conan ()
   (interactive)
   (rh-project-compile
    "clean-conan.sh"
@@ -42,7 +54,9 @@
     "@hello-conan workspace commands"
     ;; ("l" hello-conan/lint "lint")
     ("b" hello-conan/build "build")
-    ("c" hello-conan/clean "clean")))
+    ("i" hello-conan/conan-install "conan-install")
+    ("c" hello-conan/clean-conan "clean-conan")
+    ("m" hello-conan/cmake "cmake")))
 
 (hello-conan/hydra-define)
 
