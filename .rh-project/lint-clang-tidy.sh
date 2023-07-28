@@ -26,7 +26,10 @@ warning_total_count=0
 SRC_TYPES=(-name '*.cpp' -o -name '*.hpp' -o -name '*.c' -o -name '*.h')
 
 while IFS= read -r -d '' FILE; do
-  output=$(script -qefc "'clang-tidy-${CLANG_VERSION}' '${FILE}'" 2>&1 /dev/null | tee /dev/tty) ||:
+  CMD=("'clang-tidy-${CLANG_VERSION}'")
+  CMD+=("'${FILE}'")
+
+  output=$(script -qefc "${CMD[*]} 2>&1" /dev/null | tee /dev/tty) ||:
   warning_count=$(echo "${output}" | grep -ci "warning\:") ||:
   error_count=$(echo "${output}" | grep -ci "error\:") ||:
 
